@@ -13,7 +13,7 @@ class TodoList extends Component {
             }
         }
     }
-    
+
 
     componentDidMount() {
         // todos is the data we get back
@@ -33,14 +33,22 @@ class TodoList extends Component {
     }
 
 
-    handleClick = (e) => {
+    handleSubmit = (e) => {
         e.preventDefault();
         const data = this.state;
-        console.log(JSON.stringify(data, null, 2))
         fetch("/api/todos", {
             method: "post",
-            headers: {'Content-Type':'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
+        })
+    }
+
+    handleDelete = (e) => {
+        e.preventDefault();
+        let uniqueId = e.target.getAttribute("id")
+        fetch(`/api/todos/${uniqueId}`, {
+            method: "delete",
+            headers: { 'Content-Type': 'application/json' }
         })
     }
 
@@ -50,24 +58,30 @@ class TodoList extends Component {
     // Check to make sure only form field elements are added to the object.
     // Add safeguard to only store checkable fields if the checked attribute is set
     render() {
-        const {from} = this.state.inputFields.task;
-        const {task} = this.state.inputFields.task;
         return (
             <div>
                 <h2>Todo List</h2>
-            
+
                 <Ul>
                     {this.state.todos.map(todo =>
-                        <Li key={todo._id}> <strong>{todo.task}</strong><br/>{todo.from} </Li> )}
-                </Ul>
+                        <Li key={todo._id}>
+                            <strong>{todo.task}</strong>
+                            <br />
+                            {todo.from}
+                            <DeleteBtn
+                                id={todo._id}
+                                onClick={this.handleDelete}
+                            >X</DeleteBtn>
+                        </Li>)}
 
-                <p>{task} FROM {from}</p>
-                <Form onSubmit={this.handleClick} id="myForm"> 
-                    <Input type="text" id="taskInput" name="task" onChange={this.handleChange} placeholder="Your task..."/>
-                    <Input type="text" id="fromInput" name="from" onChange={this.handleChange} placeholder="Your name..."/>
+                </Ul>
+                <Form onSubmit={this.handleSubmit} id="myForm">
+                    <Input type="text" id="taskInput" name="task" onChange={this.handleChange} placeholder="Your task..." />
+
+                    <Input type="text" id="fromInput" name="from" onChange={this.handleChange} placeholder="Your name..." />
                     <Button type="submit">Add new Task!</Button>
                 </Form>
-                
+
             </div>
         )
     }
@@ -83,7 +97,7 @@ const Ul = styled.ul`
 `
 const Li = styled.li`
     margin-bottom: 1.5rem;
-    border-bottom: 1px solid #777
+    border-bottom: 1px solid #777;
 `
 
 const Form = styled.form`
@@ -92,6 +106,12 @@ const Form = styled.form`
 const Input = styled.input`
     margin-right: 1rem;
 `
+
+const DeleteBtn = styled.button`
+    background-color: red;
+    margin-left: 1rem
+`
+
 const Button = styled.button`
 
 `
