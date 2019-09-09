@@ -35,8 +35,13 @@ class TodoList extends Component {
 
     handleClick = (e) => {
         e.preventDefault();
-        const data = this.state;    
+        const data = this.state;
         console.log(JSON.stringify(data, null, 2))
+        fetch("/api/todos", {
+            method: "post",
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify(data)
+        })
     }
 
 
@@ -45,8 +50,8 @@ class TodoList extends Component {
     // Check to make sure only form field elements are added to the object.
     // Add safeguard to only store checkable fields if the checked attribute is set
     render() {
-        const {from} = this.state;
-        const {task} = this.state;
+        const {from} = this.state.inputFields.task;
+        const {task} = this.state.inputFields.task;
         return (
             <div>
                 <h2>Todo List</h2>

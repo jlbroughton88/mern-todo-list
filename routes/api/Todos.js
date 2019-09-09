@@ -27,8 +27,7 @@ router.post("/", (req, res) => {
 
     // Saving to the database
     // then gives back the item its saving, we want to get the json from it
-    newTodo.save()
-    .then(todo => res.json(todo))
+    newTodo.save().then(todo => res.json(todo))
 })
 
 // @route Delete /api/todos/:id
