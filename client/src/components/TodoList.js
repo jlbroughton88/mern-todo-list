@@ -7,24 +7,13 @@ class TodoList extends Component {
         super(props);
         this.state = {
             todos: [],
-            inputFields: {
-                task: "",
-                from: ""
-            }
         }
     }
 
 
     componentDidMount() {
-        // todos is the data we get back
-        // setting the state to newly aquired data
-        fetch("/api/todos")
-            .then(res => res.json())
-            .then(todos => this.setState({ todos }, () => console.log("Todos fetched...", todos)))
-            .catch(err => console.log(err))
-
+        this.getTodos();
     }
-
 
     handleChange = (e) => {
         this.setState({
@@ -32,25 +21,78 @@ class TodoList extends Component {
         })
     }
 
+    getTodos = () => {        
+        let todosTho = this.state.todos
+        this.setState(todosTho)   
+        // fetch todos, setState
+        fetch("/api/todos")
+            .then(res => res.json())
+            .then(todos => this.setState({ todos }, () => console.log(this.state.todos)))
+            .catch(err => console.log(err))
+     
+    };
 
     handleSubmit = (e) => {
-        e.preventDefault();
+        e.preventDefault()
         const data = this.state;
         fetch("/api/todos", {
             method: "post",
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         })
+        .then(this.getTodos())
     }
 
     handleDelete = (e) => {
-        e.preventDefault();
-        let uniqueId = e.target.getAttribute("id")
+        let uniqueId = e.target.getAttribute("id");
         fetch(`/api/todos/${uniqueId}`, {
             method: "delete",
             headers: { 'Content-Type': 'application/json' }
         })
+        .then(this.getTodos())
     }
+
+    // componentDidMount() {
+    //     // todos is the data we get back
+    //     // setting the state to newly aquired data
+    // fetch("/api/todos")
+    //     .then(res => res.json())
+    //     .then(todos => this.setState({ todos }, () => console.log("Todos fetched...", todos)))
+    //     .catch(err => console.log(err))
+
+    // }
+
+
+
+    // handleSubmit = (e) => {
+    //     e.preventDefault();
+    //     const data = this.state;
+    //     const currentTodos = [...this.state.todos]
+    // fetch("/api/todos", {
+    //     method: "post",
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify(data)
+    // }).then(() => {
+    //         currentTodos.push(data);
+    //     })
+    //     .then(fetch("/api/todos")
+    //         .then(res => res.json())
+    //         .then(todos => this.setState({ todos }, () => console.log("Todos fetched...", todos)))
+    //         .catch(err => console.log(err)))
+    // };
+
+    // handleDelete = (e) => {
+    //     e.preventDefault();
+    //     let uniqueId = e.target.getAttribute("id")
+    //     const currentTodos = [...this.state.todos]
+    //     fetch(`/api/todos/${uniqueId}`, {
+    //         method: "delete",
+    //         headers: { 'Content-Type': 'application/json' }
+    //     }).then(() => {
+    //         let updatedTodos = currentTodos.filter(todo => todo._id !== uniqueId);
+    //         this.setState({ todos: updatedTodos })
+    //     }).then(console.log(this.state.todos))
+    // }
 
 
     // Capture the form's submit event and prevent the default submission
@@ -59,7 +101,7 @@ class TodoList extends Component {
     // Add safeguard to only store checkable fields if the checked attribute is set
     render() {
         return (
-            <div>
+            <Div>
                 <h2>Todo List</h2>
 
                 <Ul>
@@ -82,36 +124,54 @@ class TodoList extends Component {
                     <Button type="submit">Add new Task!</Button>
                 </Form>
 
-            </div>
+            </Div>
         )
     }
 }
 
 export default TodoList;
 
+
+const Div = styled.div`
+    background-color: #9099a2;
+    padding-bottom: 3rem;
+    display: flex;
+    justify-contents: center;
+    align-contents: center;
+`
+
+
 const Ul = styled.ul`
     list-style: none;
+    margin-left: none;
+    margin: none;
     width: 50%;
+    display: flex;
+    flex-direction: column;
     align-self: center;
     justify-content: center;
 `
 const Li = styled.li`
     margin-bottom: 1.5rem;
     border-bottom: 1px solid #777;
+    background-color: #6d7993
+    padding: 0.5rem;
 `
 
 const Form = styled.form`
-
 `
 const Input = styled.input`
-    margin-right: 1rem;
+    background-color: #d5d5d5;
+    border: none;
 `
 
 const DeleteBtn = styled.button`
-    background-color: red;
-    margin-left: 1rem
+    background-color: #96858f;
+    margin-left: 1rem;
+    border: none;
 `
 
 const Button = styled.button`
-
+    background-color: #d5d5d5;
+    border: none;
 `
